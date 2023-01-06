@@ -82,6 +82,17 @@ AUTHENTICATION_BACKENDS = [                                                     
 
 SITE_ID =1                                                                      #added as part of allauth
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'           # temporarily added so emails get logged to backend 
+
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'      # added as part of sign up process
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
+ACCOUNT_USERNAME_MIN_LENGTH = 4
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+
+
 WSGI_APPLICATION = 'boutique_ado.wsgi.application'
 
 

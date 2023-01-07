@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'allauth.account',                  #added from all auth docs
     'allauth.socialaccount',            #added from all auth docs allows user to login via social media, and we can trakc activity more effectivley
     'home',
+    'products',
 ]
 
 MIDDLEWARE = [

@@ -10,10 +10,69 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                {{ products }}
+    <div class="overlay"></div>        <!--creates a white background-->
+    <div class="container-fluid">
+        <div class="row">              <!-- this row just holds the page title -->
+            <div class="col text-center mt-3">
+                <h2 class="logo-font">Products</h2>
+                <hr class="w-50 mb-1">                <!-- puts a horizontal line-->
+            </div>
+        </div>
+        <div class="row">                                       <!-- this row is the actual prpdcuts form the DB-->
+            <div class="product-container col-10 offset-1">     <!-- the div is 1 row the size of 10 columns across whole page but the offset -1 creates a 1column margin each side ? -->
+                <div class="row mt-1 mb-2"></div>
+                <div class="row">                   <!-- django for loop to iterate through prpdcuts-->
+                    {% for product in products %}
+                        <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3"> <!-- creates a column per product, and  large screen 4 columns , xl screesn 3 columns etc... -->
+                            <div class="card h-100 border-0">             <!-- creates a card per product-->
+                                {% if product.image %}                  <!-- image first if no actual imnage then use a no-image-->
+                                <a href="">
+                                    <img class="card-img-top img-fluid" src="{{ product.image.url }}" alt="{{ product.name }}">
+                                </a>
+                                {% else %}
+                                <a href="">
+                                    <img class="card-img-top img-fluid" src="{{ MEDIA_URL }}noimage.png" alt="{{ product.name }}">
+                                </a>
+                                {% endif %}
+                                <div class="card-body pb-0">
+                                    <p class="mb-0">{{ product.name }}</p>             <!-- prpdcut name and contents below -->
+                                </div>
+                                <div class="card-footer bg-white pt-0 border-0 text-left">  <!-- gooters of the cars showing prpcing and rating of the prpdcut-->
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="lead mb-0 text-left font-weight-bold">${{ product.price }}</p>
+                                            {% if product.rating %}
+                                                <small class="text-muted"><i class="fas fa-star mr-1"></i>{{ product.rating }} / 5</small>
+                                            {% else %}
+                                                <small class="text-muted">No Rating</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                          <!-- in video they commented that this was hard but this type of thinkng will help improve as a developer -->
+                        {% if forloop.counter|divisibleby:1 %}        <!--- thsi whole section is working out how many prpdcuts are on page and applying horixontal line-->
+                            <div class="col-12 d-sm-none mb-5">   <!-- mb5   is margin bottom 5-->
+                                <hr>
+                            </div>
+                        {% endif %}                        
+                        {% if forloop.counter|divisibleby:2 %}            <!--- thsi whole section is working out how many prpdcuts are on page and applying horixontal line-->
+                            <div class="col-12 d-none d-sm-block d-md-block d-lg-none mb-5">    <!-- shows on small and medium screens -->
+                                <hr>
+                            </div>
+                        {% endif %}
+                        {% if forloop.counter|divisibleby:3 %}             <!--- thsi whole section is working out how many prpdcuts are on page and applying horixontal line-->
+                            <div class="col-12 d-none d-lg-block d-xl-none mb-5">    <!-- shows on large screens -->
+                                <hr>
+                            </div>
+                        {% endif %}
+                        {% if forloop.counter|divisibleby:4 %}           <!--- thsi whole section is working out how many prpdcuts are on page and applying horixontal line-->
+                            <div class="col-12 d-none d-xl-block mb-5">       <!-- shows on extra large screens -->
+                                <hr>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

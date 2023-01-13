@@ -117,3 +117,35 @@
         </div>
     </div>
 {% endblock %}
+<!-- JS Below for the high/low drop down   USING JQUERY as less verbose-->
+{% block postloadjs %}
+    {{ block.super }}                   <!--THIS ENSURE WE APPEND RATHER THAN REPLACE --> 
+    <script type="text/javascript">
+		$('.btt-link').click(function(e) {
+			window.scrollTo(0,0)
+		})
+	</script>
+    
+    <script type="text/javascript">
+        $('#sort-selector').change(function() {    // captures when the sort selector changes 
+            var selector = $(this);                //set a variable withthe value this 
+            var currentUrl = new URL(window.location);     //gets the current url and will allow us to replace the GET PARAMETER
+
+            var selectedVal = selector.val();     //grab what value has been selected 
+            if(selectedVal != "reset"){          // if its not reset then 
+                var sort = selectedVal.split("_")[0];         //assign first part of name to sort 
+                var direction = selectedVal.split("_")[1];     //assign 2nd part of split as direction var 
+
+                currentUrl.searchParams.set("sort", sort);     //in current url we change the sort parameter to the value form above 
+                currentUrl.searchParams.set("direction", direction);   //in current url we change the direction paramater to the parameter held in direction variable above.
+
+                window.location.replace(currentUrl);               // now we can change the url to includ asc, or desc etc....  and page will reload.. 
+            } else {
+                currentUrl.searchParams.delete("sort");      //otherwise will remove any sorts or direction
+                currentUrl.searchParams.delete("direction");
+
+                window.location.replace(currentUrl);
+            }
+        })
+    </script>
+{% endblock %}

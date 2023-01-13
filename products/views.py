@@ -22,7 +22,8 @@ def all_products(request):                                  #creating a function
             if sortkey == 'name':             #ythis part is to allow lowercase 
                 sortkey = 'lower_name'
                 products = products.annotate(lower_name=Lower('name'))     
-
+            if sortkey == 'category':           # added this and line beloew so sorting by categorry name rather than category id
+                sortkey = 'category__name'
             if 'direction' in request.GET:
                 direction = request.GET['direction']
                 if direction == 'desc':

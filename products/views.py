@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib import messages              # had to improt this as part of search 
-from .models import Product                     # importing the Prodcuts class from models.py  
+from .models import Product, Category                     # importing the Prodcuts class from models.py  
 from django.db.models import Q 
 
 # Create your views here.
@@ -10,9 +10,15 @@ def all_products(request):                                  #creating a function
 
     products = Product.objects.all ()                    #creating a variable called prpdcuts that holds all of the objects in Product
     query = None                                    # added as part of search to set variable to none
+    category = None                           # added as part of Categories 
 
 
     if request.GET:                                       # start of search element 
+        if 'category' in request.GET:                       # category specific 
+            categories = request.GET['category'].split(',')   # splits categoreis url passed by , 
+            products = products.filter(category__name__in=categories)  # note the double underscore its part of DJANGO syntax  for queries works beause of foriegn key 
+            categories = Category.objects.filter(name__in=categories)    # this is done so we can see what category or category was selected 
+
         if 'q' in request.GET:                            # we have set q as the text input in the form - hence why we use q here   
             query = request.GET['q']                        # value of q gets set to a variable called query --- 
             if not query:
@@ -25,6 +31,7 @@ def all_products(request):                                  #creating a function
     context = {                                         # ??? Not sure what this does ???                            
         'products': products,
         'search_term': query,                           # added for search ? unsure why 
+        'current_categories': categories,          # variable created and referances categoreis in line 18  categories = Category.objects.filter(name__in=categories)
 
     }
 

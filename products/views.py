@@ -10,10 +10,26 @@ def all_products(request):                                  #creating a function
 
     products = Product.objects.all ()                    #creating a variable called prpdcuts that holds all of the objects in Product
     query = None                                    # added as part of search to set variable to none
-    category = None                           # added as part of Categories 
+    categories = None                           # added as part of Categories 
+    sort = None
+    direction = None
 
 
-    if request.GET:                                       # start of search element 
+    if request.GET:
+        if 'sort' in request.GET:
+            sortkey = request.GET['sort']
+            sort = sortkey
+            if sortkey == 'name':             #ythis part is to allow lowercase 
+                sortkey = 'lower_name'
+                products = products.annotate(lower_name=Lower('name'))     
+
+            if 'direction' in request.GET:
+                direction = request.GET['direction']
+                if direction == 'desc':
+                    sortkey = f'-{sortkey}'                #changes order form ascending to descending using f - 
+            products = products.order_by(sortkey)        #order_by method is part of DJANOGO
+        
+                                               # start of search element 
         if 'category' in request.GET:                       # category specific 
             categories = request.GET['category'].split(',')   # splits categoreis url passed by , 
             products = products.filter(category__name__in=categories)  # note the double underscore its part of DJANGO syntax  for queries works beause of foriegn key 
@@ -26,13 +42,15 @@ def all_products(request):                                  #creating a function
                 return redirect(reverse('products'))
             
             queries = Q(name__icontains=query) | Q(description__icontains=query)    # Q is part of DJANGO and allows an OR search so searches in description or name fields , note the i at the start
-            products = products.filter(queries)                                     #end of search element  return prpdcuts based on queries variable
+            products = products.filter(queries)                                       #end of search element  return prpdcuts based on queries variable
+                                                  
+    current_sorting = f'{sort}_{direction}'             #part of sort and direction                                         
 
     context = {                                         # ??? Not sure what this does ???                            
         'products': products,
         'search_term': query,                           # added for search ? unsure why 
-        'current_categories': categories,          # variable created and referances categoreis in line 18  categories = Category.objects.filter(name__in=categories)
-
+        'current_categories': categories,          # variable created and referances categoreis in line 18  
+        'current_sorting': current_sorting,       # added as part of sort ---  so uses above to define a default direction
     }
 
     return render(request, 'products/products.html', context)

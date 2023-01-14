@@ -52,6 +52,11 @@ body {
     color: white;
 }
 
+.btn-outline-black:focus {
+    background: black;
+    color: white !important;
+}
+
 .text-black {
     color: #000 !important;
 }

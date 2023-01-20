@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse, HttpResponse
 
 # Create your views here.
 
@@ -36,4 +36,49 @@ def add_to_bag(request, item_id):
     request.session['bag'] = bag
     print(request.session['bag'])
     return redirect(redirect_url)
-    
+
+#adjusting/editing bag 
+def adjust_bag(request, item_id):
+   
+    quantity = int(request.POST.get('quantity'))
+    size = None                                         #adding for size and adding logic for sizing
+    if 'product_size' in request.POST:                  # is size present in url if so assign it to the variable below 
+        size = request.POST['product_size']
+
+    bag = request.session.get('bag', {})             # this is key as creates in  he http session and stores it until user closes browser
+
+    if size:                                                #if size has a value
+       if quantity > 0:
+          bag[item_id]['items_by_size'][size] = quantity
+       else:
+        del bag[item_id]['items_by_size'][size]
+        if not bag[item_id]['items_by_size'][size]:      #if no other sizes of that item 
+            bag.pop(item_id)                            #remove item from dictionairy.. pop it off
+    else:
+          bag.pop(item_id)                          # pop it out of the bag... 
+
+    request.session['bag'] = bag
+    print(request.session['bag'])
+    return redirect(reverse('view_bag'))    
+
+
+#removing items from the bag 
+def remove_from_bag(request, item_id):
+   
+    try:
+        size = None                                         #adding for size and adding logic for sizing
+        if 'product_size' in request.POST:                  # is size present in url if so assign it to the variable below 
+                size = request.POST['product_size']
+        bag = request.session.get('bag', {})             # this is key as creates in  he http session and stores it until user closes browser
+            
+        if size:                                                #if size has a value
+            del bag[item_id]['items_by_size'][size] 
+            if not bag[item_id]['items_by_size']:      #if no other sizes of that item 
+                bag.pop(item_id) 
+            else:
+                bag.pop(item_id)
+
+            request.session['bag'] = bag
+            return HttpResponse(status=200)    
+    except Exception as e: 
+            return HttpResponse(status=500)     

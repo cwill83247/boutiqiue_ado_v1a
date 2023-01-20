@@ -14,15 +14,30 @@ def bag_contents(request):
     bag = request.session.get('bag', {})
 
     #addign the logic to update cost, and qunatities 
-    for item_id, quantity in bag.items():
-        product = get_object_or_404(Product, pk=item_id)
-        total += quantity * product.price
-        product_count += quantity
-        bag_items.append({
-            'item_id': item_id,        
-            'quantity': quantity,
-            'product': product,        #getting the actual prodcut so we can referene later 
-        })
+    for item_id, item_data in bag.items():
+        if isinstance(item_data, int):                        #if item data has a number value DO
+            product = get_object_or_404(Product, pk=item_id)
+            total += item_data * product.price
+            product_count += item_data
+            bag_items.append({
+                'item_id': item_id,        
+                'quantity': item_data,
+                'product': product,        #getting the actual prodcut so we can referene later 
+            })
+        else:                                           # if item data doesnt have a number do this
+            product = get_object_or_404(Product, pk=item_id)
+            for size, quantity in item_data['items_by_size'].items():
+                total += quantity * product.price
+                product_count += quantity
+                bag_items.append({
+                    'item_id': item_id,        
+                    'quantity': item_data,
+                    'product': product,     
+                    'size': size,
+                })    
+
+
+
 
     if total < settings.FREE_DELIVERY_THRESHOLD:                                        # logic to check if less than free delivery amount
         delivery = total * Decimal(settings.STANDARD_DELIVERY_PERCENTAGE / 100)

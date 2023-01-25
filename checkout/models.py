@@ -38,7 +38,7 @@ class Order(models.Model):                  # this handles orders across the sto
         Update grand total each time a line item is added,
         accounting for delivery costs.
         """
-        self.order_total = self.lineitems.aggregate(Sum('lineitem_total'))['lineitem_total__sum']   #lineitems are part of the sum function syntax  imported form DJANGO
+        self.order_total = self.lineitems.aggregate(Sum('lineitem_total'))['lineitem_total__sum']   #lineitems are part of using the aggregate  function syntax  imported from DJANGO
         if self.order_total < settings.FREE_DELIVERY_THRESHOLD:
             self.delivery_cost = self.order_total * settings.STANDARD_DELIVERY_PERCENTAGE / 100
         else:
@@ -75,4 +75,4 @@ class OrderLineItem(models.Model):    # individual shopping bag item linked to a
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'SKU {self.product.sku} on order {self.order.order_number}'
+        return f'SKU {self.product.sku} on order {self.order.order_number}'       #retrun sku for the item that is in the order   

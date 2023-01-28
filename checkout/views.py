@@ -1,25 +1,16 @@
 
 # Create your views here.
 
-from django.shortcuts import render, redirect, reverse
-from django.contrib import messages
-
-from django.shortcuts import (
-    render, redirect, reverse, get_object_or_404, HttpResponse
-)
-from django.views.decorators.http import require_POST
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib import messages
 from django.conf import settings
 
 from .forms import OrderForm
 from .models import Order, OrderLineItem
-
 from products.models import Product
-
 from bag.contexts import bag_contents
 
 import stripe
-import json
 
 
 def checkout(request):
@@ -29,7 +20,7 @@ def checkout(request):
     if request.method == 'POST':
         bag = request.session.get('bag', {})
 
-        form_data = {
+        form_data = {                                 #
             'full_name': request.POST['full_name'],
             'email': request.POST['email'],
             'phone_number': request.POST['phone_number'],
@@ -71,7 +62,8 @@ def checkout(request):
                     return redirect(reverse('view_bag'))
 
             request.session['save_info'] = 'save-info' in request.POST
-            return redirect(reverse('checkout_success', args=[order.order_number]))
+            return redirect(reverse(
+                'checkout_success', args=[order.order_number]))
         else:
             messages.error(request, 'There was an error with your form. \
                 Please double check your information.')

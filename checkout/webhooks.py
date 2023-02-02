@@ -34,11 +34,11 @@ def webhook(request):
         return HttpResponse(content=e, status=400)
 
     # Set up a webhook handler
-    handler = StripeWH_Handler(request)
+    handler = StripeWH_Handler(request)   ##creating an instance of our class from webhook_handler.py
 
-    # Map webhook events to relevant handler functions
+    # Map webhook events to relevant handler functions  dictionary with keys the name of the webhook
     event_map = {
-        'payment_intent.succeeded': handler.handle_payment_intent_succeeded,
+        'payment_intent.succeeded': handler.handle_payment_intent_succeeded,   #maps stripe event to the function in webhooks_handler.py
         'payment_intent.payment_failed': handler.handle_payment_intent_payment_failed,
     }
 
@@ -51,4 +51,4 @@ def webhook(request):
 
     # Call the event handler with the event
     response = event_handler(event)
-    return response
+    return response                       #returns repsonse to stripe 

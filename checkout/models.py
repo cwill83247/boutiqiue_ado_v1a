@@ -26,6 +26,9 @@ class Order(models.Model):                  # this handles orders across the sto
     delivery_cost = models.DecimalField(max_digits=6, decimal_places=2, null=False, default=0)     # calculated field
     order_total = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=0)       # calculated field
     grand_total = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=0)       # calculated field
+    original_bag = models.TextField(null=False, blank=False, default='')   # added in case cusotmer orders smae items but on a different order
+    stripe_pid = models.CharField(max_length=254, null=False, default='')   # added in case cusotmer order same items on different day
+
 
     def _generate_order_number(self):                                   # underscore at start means its aprovate methos - creates a unique order number 
         """

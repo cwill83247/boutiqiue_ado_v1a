@@ -76,7 +76,17 @@ def product_detail(request, product_id):                                  #creat
 
 def add_product(request):
     """ Add a product to the store """
-    form = ProductForm()                            #calling product form class form forms.py creating an instance called form 
+    """ Add a product to the store """
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Successfully added product!')
+            return redirect(reverse('add_product'))
+        else:
+            messages.error(request, 'Failed to add product. Please ensure the form is valid.')
+    else:         
+        form = ProductForm()                            #calling product form class  so empty form forms.py creating an instance called form 
     template = 'products/add_product.html'
     context = {
         'form': form,                                       #form is just variable name we have given it

@@ -4,6 +4,9 @@ from .models import Product, Category                     # importing the Prodcu
 from django.db.models import Q 
 from django.db.models.functions import Lower
 
+ #just importing classes that we need
+from .forms import ProductForm
+
 # Create your views here.
 
 def all_products(request):                                  #creating a function called all_prodcuts
@@ -68,3 +71,14 @@ def product_detail(request, product_id):                                  #creat
     }
 
     return render(request, 'products/product_detail.html', context)
+
+
+def add_product(request):
+    """ Add a product to the store """
+    form = ProductForm()                            #calling product form class form forms.py creating an instance called form 
+    template = 'products/add_product.html'
+    context = {
+        'form': form,                                       #form is just variable name we have given it
+    }
+
+    return render(request, template, context)        # we mash up the template and context to output html @ add_prpdcut.html

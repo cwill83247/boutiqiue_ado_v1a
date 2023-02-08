@@ -3,9 +3,10 @@ from django.contrib import messages              # had to improt this as part of
 from .models import Product, Category                     # importing the Prodcuts class from models.py  
 from django.db.models import Q 
 from django.db.models.functions import Lower
+from .forms import ProductForm
 
  #just importing classes that we need
-from .forms import ProductForm
+
 
 # Create your views here.
 

@@ -8,6 +8,7 @@ from .forms import UserProfileForm
 from django.contrib.auth.decorators import login_required    # imported to secure superuser views !!!!!
 from checkout.models import Order
 
+
 @login_required
 def profile(request):
     """ Display the user's profile. """

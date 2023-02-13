@@ -5,9 +5,10 @@ from django.contrib import messages                         # importing from dja
 from django.shortcuts import render
 from .models import UserProfile
 from .forms import UserProfileForm
-
+from django.contrib.auth.decorators import login_required    # imported to secure superuser views !!!!!
 from checkout.models import Order
 
+@login_required
 def profile(request):
     """ Display the user's profile. """
     profile = get_object_or_404(UserProfile, user=request.user)

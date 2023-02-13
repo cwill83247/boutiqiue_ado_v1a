@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib import messages              # had to improt this as part of search 
 from .models import Product, Category                     # importing the Prodcuts class from models.py  
 from django.db.models import Q 
+from django.contrib.auth.decorators import login_required    # imported to secure superuser views !!!!!
 from django.db.models.functions import Lower
 from .forms import ProductForm
 
@@ -73,9 +74,13 @@ def product_detail(request, product_id):                                  #creat
 
     return render(request, 'products/product_detail.html', context)
 
-
+@login_required
 def add_product(request):
-    """ Add a product to the store """
+    """ superuser check """
+    if not request.user.is_superuser:
+        messages.error(request, 'Sorry, only store owners can do that.')
+        return redirect(reverse('home'))
+
     """ Add a product to the store """
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
@@ -95,9 +100,16 @@ def add_product(request):
     return render(request, template, context)        # we mash up the template and context to output html @ add_prpdcut.html
 
 
+@login_required
 def edit_product(request, product_id):                               #takes the request and the prpdcutid the user is going to edit
     """ Edit a product in the store """
     product = get_object_or_404(Product, pk=product_id)
+    
+    """ superuser check """
+    if not request.user.is_superuser:
+        messages.error(request, 'Sorry, only store owners can do that.')
+        return redirect(reverse('home'))      
+    
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES, instance=product)   # we are updating the instance above.
         if form.is_valid():
@@ -118,8 +130,14 @@ def edit_product(request, product_id):                               #takes the 
 
     return render(request, template, context) 
 
-
+@login_required
 def delete_product(request, product_id):
+
+    """ superuser check """
+    if not request.user.is_superuser:
+        messages.error(request, 'Sorry, only store owners can do that.')
+        return redirect(reverse('home'))
+
     """ Delete a product from the store """
     product = get_object_or_404(Product, pk=product_id)     #pk is the primary key and part of django syntax
     product.delete()

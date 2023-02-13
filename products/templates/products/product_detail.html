@@ -84,7 +84,12 @@
                                     </div>
                                 </div>
                             </div>
-
+                            {% if request.user.is_superuser %}
+                            <small class="ml-3">
+                                <a href="{% url 'edit_product' product.id %}">Edit item</a> | 
+                                <a class="text-danger" href="{% url 'delete_product' product.id %}">Delete item</a>
+                            </small>
+                        {% endif %}
                             <div class="col{% if s %}-12 mt-2{% endif %}">     <!-- referencing the s variable form drop down earlier ??-->
                                 <a href="{% url 'products' %}" class="btn btn-outline-black rounded-0 mt-5">
                                     <span class="icon">
